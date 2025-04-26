@@ -9,7 +9,7 @@ interface LocationCardProps {
 const LocationCard = ({ image, name, eventCount }: LocationCardProps) => {
   return (
     <Link href={`/events?location=${encodeURIComponent(name)}`}>
-      <a className="group relative rounded-lg overflow-hidden h-40">
+      <div className="group relative rounded-lg overflow-hidden h-40 cursor-pointer">
         <img 
           src={image} 
           alt={`${name} events`} 
@@ -20,7 +20,7 @@ const LocationCard = ({ image, name, eventCount }: LocationCardProps) => {
           <h3 className="font-medium text-lg">{name}</h3>
           <p className="text-sm opacity-90">{eventCount} events</p>
         </div>
-      </a>
+      </div>
     </Link>
   );
 };
@@ -67,12 +67,12 @@ const PopularLocations = () => {
         
         <div className="mt-8 text-center">
           <Link href="/events">
-            <a className="text-accent hover:underline font-medium inline-flex items-center">
+            <div className="text-accent hover:underline font-medium inline-flex items-center cursor-pointer">
               View all locations 
               <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
               </svg>
-            </a>
+            </div>
           </Link>
         </div>
       </div>
