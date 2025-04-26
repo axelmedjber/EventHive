@@ -4,7 +4,6 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { 
   insertUserSchema, 
-  userFormSchema, 
   insertEventSchema,
   insertTicketSchema,
   insertRegistrationSchema,
@@ -41,7 +40,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Registration
   app.post("/api/auth/register", async (req: Request, res: Response) => {
     try {
-      const userData = userFormSchema.parse(req.body);
+      const userData = insertUserSchema.parse(req.body);
       
       // Check if user already exists
       const existingUsername = await storage.getUserByUsername(userData.username);
