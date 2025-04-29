@@ -1,0 +1,33 @@
+[vite] connecting...
+[vite] connected.
+[vite] hot updated: /src/pages/EventsPage.tsx
+[vite] hot updated: /src/index.css?v=nYTm3vCezPolwo2tm1oEW
+[vite] hot updated: /src/pages/EventsPage.tsx
+[vite] hot updated: /src/index.css?v=nYTm3vCezPolwo2tm1oEW
+Warning: Cannot update a component (&#x60;ForwardRef&#x60;) while rendering a different component (&#x60;Dashboard&#x60;). To locate the bad setState() call inside &#x60;Dashboard&#x60;, follow the stack trace as described in https://reactjs.org/link/setstate-in-render
+    at Dashboard (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/src/pages/Dashboard.tsx:89:25)
+    at Route (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=d095bf32:323:16)
+    at Switch (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=d095bf32:379:17)
+    at main
+    at div
+    at Router
+    at Provider (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-7SUNRGEF.js?v=d095bf32:38:15)
+    at TooltipProvider (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d095bf32:59:5)
+    at AuthProvider (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/src/hooks/useAuth.tsx:23:32)
+    at QueryClientProvider (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=d095bf32:2805:3)
+    at App
+at Dashboard (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/src/pages/Dashboard.tsx:89:25)
+at Route (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=d095bf32:323:16)
+at Switch (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=d095bf32:379:17)
+at main
+at div
+at Router
+at Provider (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-7SUNRGEF.js?v=d095bf32:38:15)
+at TooltipProvider (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=d095bf32:59:5)
+at AuthProvider (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/src/hooks/useAuth.tsx:23:32)
+at QueryClientProvider (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=d095bf32:2805:3)
+at App
+at t.value (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://c999d307-ff5b-4f63-b55e-de331c6de327-00-2htsd9ak1dnvi.janeway.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400

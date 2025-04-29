@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
@@ -101,11 +101,12 @@ const Dashboard = () => {
     enabled: !!registrations && registrations.length > 0,
   });
 
-  // Handle unauthenticated state
-  if (!authLoading && !user) {
-    navigate("/login?redirect=/dashboard");
-    return null;
-  }
+  // Handle unauthenticated state using useEffect
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/login?redirect=/dashboard");
+    }
+  }, [authLoading, user, navigate]);
 
   // Loading state
   const isLoading = authLoading || eventsLoading || registrationsLoading || detailsLoading;
