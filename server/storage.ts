@@ -109,7 +109,8 @@ export class MemStorage implements IStorage {
       }
       
       console.log("Seeding sample data...");
-      const bcrypt = require('bcryptjs');
+      // Import bcryptjs
+      const bcrypt = await import('bcryptjs');
       
       // Create organizer users
       const users = [
@@ -163,8 +164,8 @@ export class MemStorage implements IStorage {
       const createdUsers: { [key: string]: number } = {};
     
       for (const userData of users) {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(userData.password, salt);
+        const salt = await bcrypt.default.genSalt(10);
+        const hashedPassword = await bcrypt.default.hash(userData.password, salt);
         
         const insertUser: InsertUser = {
           ...userData,
@@ -198,8 +199,8 @@ export class MemStorage implements IStorage {
       ];
     
       for (const userData of attendees) {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(userData.password, salt);
+        const salt = await bcrypt.default.genSalt(10);
+        const hashedPassword = await bcrypt.default.hash(userData.password, salt);
         
         const insertUser: InsertUser = {
           ...userData,

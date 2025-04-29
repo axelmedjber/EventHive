@@ -9,7 +9,7 @@ import {
   insertRegistrationSchema,
   eventFormSchema
 } from "@shared/schema";
-import bcrypt from "bcryptjs";
+import * as bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
 
