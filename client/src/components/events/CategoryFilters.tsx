@@ -74,26 +74,26 @@ const CategoryFilters = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {categories?.map((category) => (
             <Link key={category.id} href={`/events?category=${category.id}`}>
-              <a className="flex flex-col items-center group">
+              <div className="flex flex-col items-center group cursor-pointer">
                 <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-2 group-hover:bg-primary/10 transition-colors">
                   <CategoryIcon icon={category.icon} />
                 </div>
                 <span className="text-sm text-foreground group-hover:text-primary transition-colors">
                   {category.name}
                 </span>
-              </a>
+              </div>
             </Link>
           ))}
           
           <Link href="/events">
-            <a className="flex flex-col items-center group">
+            <div className="flex flex-col items-center group cursor-pointer">
               <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-2 group-hover:bg-primary/10 transition-colors">
                 <MoreHorizontal className="h-6 w-6 text-primary" />
               </div>
               <span className="text-sm text-foreground group-hover:text-primary transition-colors">
                 More
               </span>
-            </a>
+            </div>
           </Link>
         </div>
       </div>
