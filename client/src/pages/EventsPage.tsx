@@ -40,7 +40,7 @@ const EventsPage = () => {
   const [searchQuery, setSearchQuery] = useState(params.get('search') || '');
   const [locationFilter, setLocationFilter] = useState(params.get('location') || '');
   const [dateFilter, setDateFilter] = useState(params.get('date') || 'any');
-  const [categoryFilter, setCategoryFilter] = useState(params.get('category') || '');
+  const [categoryFilter, setCategoryFilter] = useState(params.get('category') || 'all');
   const [priceFilter, setPriceFilter] = useState(params.get('price') || 'any');
   const [formatFilter, setFormatFilter] = useState(params.get('format') || 'any');
   
@@ -58,7 +58,7 @@ const EventsPage = () => {
     if (searchQuery) params.append('search', searchQuery);
     if (locationFilter) params.append('location', locationFilter);
     if (dateFilter !== 'any') params.append('date', dateFilter);
-    if (categoryFilter) params.append('category', categoryFilter);
+    if (categoryFilter && categoryFilter !== 'all') params.append('category', categoryFilter);
     if (priceFilter !== 'any') params.append('price', priceFilter);
     if (formatFilter !== 'any') params.append('format', formatFilter);
     
@@ -70,7 +70,7 @@ const EventsPage = () => {
     setSearchQuery('');
     setLocationFilter('');
     setDateFilter('any');
-    setCategoryFilter('');
+    setCategoryFilter('all');
     setPriceFilter('any');
     setFormatFilter('any');
   };
@@ -140,7 +140,7 @@ const EventsPage = () => {
                           <SelectValue placeholder="All categories" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">All categories</SelectItem>
+                          <SelectItem value="all">All categories</SelectItem>
                           {categories?.map((category) => (
                             <SelectItem key={category.id} value={category.id.toString()}>
                               {category.name}
@@ -254,7 +254,7 @@ const EventsPage = () => {
                         <SelectValue placeholder="All categories" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All categories</SelectItem>
+                        <SelectItem value="all">All categories</SelectItem>
                         {categories?.map((category) => (
                           <SelectItem key={category.id} value={category.id.toString()}>
                             {category.name}
@@ -308,7 +308,7 @@ const EventsPage = () => {
               <EventGrid 
                 title={searchQuery ? `Search results for "${searchQuery}"` : "All Events"} 
                 filterControls={false}
-                categoryId={categoryFilter ? parseInt(categoryFilter) : undefined}
+                categoryId={categoryFilter && categoryFilter !== 'all' ? parseInt(categoryFilter) : undefined}
                 searchQuery={searchQuery}
               />
             </div>
