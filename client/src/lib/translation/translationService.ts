@@ -1,4 +1,3 @@
-import { apiRequest } from '../queryClient';
 import { v4 as uuidv4 } from 'uuid';
 
 // Type definitions for API responses
@@ -9,6 +8,30 @@ interface TranslateTextResponse {
 interface TranslateObjectResponse<T> {
   translatedObject: T;
 }
+
+// Helper function to make API requests
+const apiCall = async (endpoint: string, data: any) => {
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API call failed: ${response.status} - ${errorText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('API call error:', error);
+    throw error;
+  }
+};
 
 export const supportedLanguages = [
   { code: 'en', name: 'English' },
@@ -34,16 +57,19 @@ export const translateText = async (
     if (Array.isArray(text) && text.length === 0) return [];
     if (!Array.isArray(text) && !text) return text;
     
+    // If target language is the same as source, no need to translate
+    if (targetLanguageCode === sourceLanguageCode) {
+      return text;
+    }
+    
     // Call our server-side translation endpoint
-    const response = await apiRequest('POST', '/api/translations/translate', {
+    const data = await apiCall('/api/translations/translate', {
       text,
       targetLanguage: targetLanguageCode,
       sourceLanguage: sourceLanguageCode
     });
     
-    const data: TranslateTextResponse = await response.json();
-    
-    if (data.translatedText) {
+    if (data && data.translatedText) {
       return data.translatedText;
     }
     
@@ -107,15 +133,13 @@ export const translateObject = async<T extends Record<string, any>>(
 
   try {
     // Call our server-side object translation endpoint
-    const response = await apiRequest('POST', '/api/translations/translate-object', {
+    const data = await apiCall('/api/translations/translate-object', {
       object: obj,
       targetLanguage: targetLanguageCode,
       sourceLanguage: sourceLanguageCode
     });
     
-    const data: TranslateObjectResponse<T> = await response.json();
-    
-    if (data.translatedObject) {
+    if (data && data.translatedObject) {
       return data.translatedObject;
     }
     

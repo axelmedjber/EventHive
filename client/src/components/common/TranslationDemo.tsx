@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/lib/translation/LanguageContext';
+import { supportedLanguages } from '@/lib/translation/translationService';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -66,9 +67,9 @@ const TranslationDemo: React.FC = () => {
           
           {currentLanguage !== 'en' && (
             <div>
-              <Badge variant="outline" className="mb-2">{
-                useLanguage().supportedLanguages.find(lang => lang.code === currentLanguage)?.name || currentLanguage
-              }</Badge>
+              <Badge variant="outline" className="mb-2">
+                {supportedLanguages.find(lang => lang.code === currentLanguage)?.name || currentLanguage}
+              </Badge>
               <Textarea 
                 readOnly
                 value={translatedText}

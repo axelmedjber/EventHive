@@ -4,29 +4,42 @@ import * as fs from 'fs';
 
 // Create a client using provided credentials
 const CREDENTIALS_PATH = path.join(process.cwd(), 'google-credentials.json');
+const API_KEY = process.env.GOOGLE_TRANSLATE_API_KEY;
 
 let translationClient: TranslationServiceClient | null = null;
 
-if (fs.existsSync(CREDENTIALS_PATH)) {
-  try {
+try {
+  // Prefer using the credentials file if it exists
+  if (fs.existsSync(CREDENTIALS_PATH)) {
     translationClient = new TranslationServiceClient({
       keyFilename: CREDENTIALS_PATH
     });
-  } catch (error) {
-    console.error('Error initializing translation client:', error);
+    console.log('Translation client initialized with credentials file');
+  } 
+  // Fallback to API key if provided
+  else if (API_KEY) {
+    translationClient = new TranslationServiceClient({
+      credentials: {
+        client_email: 'translation-service@artful-cipher-458411-n6.iam.gserviceaccount.com',
+        private_key: API_KEY
+      }
+    });
+    console.log('Translation client initialized with API key');
+  } else {
+    console.error('No translation credentials or API key available');
   }
-} else {
-  console.error(`Credentials file not found at ${CREDENTIALS_PATH}`);
+} catch (error) {
+  console.error('Error initializing translation client:', error);
 }
 
-// Get the project ID from credentials
+// Get the project ID from credentials or use default
 const getProjectId = (): string => {
   try {
     if (fs.existsSync(CREDENTIALS_PATH)) {
       const credentials = JSON.parse(fs.readFileSync(CREDENTIALS_PATH, 'utf8'));
       return credentials.project_id;
     }
-    return 'artful-cipher-458411-n6';
+    return 'artful-cipher-458411-n6'; // Default project ID as fallback
   } catch (error) {
     console.error('Error getting project ID:', error);
     return '';
