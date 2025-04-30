@@ -19,35 +19,52 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
   const [translatedText, setTranslatedText] = useState<string>(text);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Improve translation with cleaner handling of language prefixes
+  // Improve translation with cleaner handling of language indicators
   const cleanupTranslation = (text: string): string => {
-    const langPrefix = /^\[(EN|ES|FR|DE|ZH|JA|AR|RU)\] /;
-    return text.replace(langPrefix, '');
+    // Remove language suffix: "text [Français]" -> "text"
+    const langSuffix = / \[(Español|Français|Deutsch|中文|日本語|العربية|Русский|[A-Z]+)\]$/;
+    return text.replace(langSuffix, '');
   };
 
+  // Track language change events
   useEffect(() => {
+    const handleLanguageChange = () => {
+      console.log("Language change detected in TranslatedText");
+      performTranslation();
+    };
+
+    // Listen for the custom language-changed event
+    document.body.addEventListener('language-changed', handleLanguageChange);
+
+    // Clean up listener on unmount
+    return () => {
+      document.body.removeEventListener('language-changed', handleLanguageChange);
+    };
+  }, []);
+
+  const performTranslation = async () => {
     // No need to translate if language is English or text is empty
     if (!text || currentLanguage === 'en') {
       setTranslatedText(text);
       return;
     }
 
-    // Translate the text
-    const performTranslation = async () => {
-      setIsLoading(true);
-      try {
-        const result = await translateText(text, currentLanguage, 'en');
-        // Clean up any language prefixes from simulated translations
-        const cleanResult = cleanupTranslation(result as string);
-        setTranslatedText(cleanResult);
-      } catch (error) {
-        console.error('Translation error:', error);
-        setTranslatedText(text); // Fallback to original text
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    setIsLoading(true);
+    try {
+      const result = await translateText(text, currentLanguage, 'en');
+      // Clean up any language prefixes from simulated translations
+      const cleanResult = cleanupTranslation(result as string);
+      setTranslatedText(cleanResult);
+    } catch (error) {
+      console.error('Translation error:', error);
+      setTranslatedText(text); // Fallback to original text
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  // Translate when text or language changes
+  useEffect(() => {
     performTranslation();
   }, [text, currentLanguage, translateText]);
 

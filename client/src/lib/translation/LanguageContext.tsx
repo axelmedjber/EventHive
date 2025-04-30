@@ -25,8 +25,13 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     console.log(`Setting language to ${lang}`);
     // Store in localStorage first
     localStorage.setItem('preferred_language', lang);
-    // Then update state
+    // Then update state (this will trigger a re-render)
     setCurrentLanguage(lang);
+    
+    // Force all translated components to re-render
+    document.body.dispatchEvent(new CustomEvent('language-changed', { 
+      detail: { language: lang } 
+    }));
   }, []);
 
   // Wrap translate functions to include current language
