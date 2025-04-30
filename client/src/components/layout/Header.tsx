@@ -21,17 +21,15 @@ const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { currentLanguage, setLanguage, supportedLanguages } = useLanguage();
 
-  // Create a single language selector that will be used in both desktop and mobile views
+  // Create a simple language selector for English and French
   const LanguageSelectorControl = () => {
     const handleLanguageChange = (lang: string) => {
       console.log(`Language change in Header to ${lang}`);
       setLanguage(lang);
     };
     
-    // Find current language name
-    const currentLanguageName = supportedLanguages.find(
-      lang => lang.code === currentLanguage
-    )?.name || 'English';
+    // Use hard-coded language names instead of the full list from context
+    const currentLanguageName = currentLanguage === 'fr' ? 'Français' : 'English';
     
     return (
       <div className="flex gap-2 items-center">
@@ -41,11 +39,8 @@ const Header = () => {
           onChange={(e) => handleLanguageChange(e.target.value)}
           className="bg-transparent border-none text-sm cursor-pointer outline-none hover:text-primary focus:ring-0"
         >
-          {supportedLanguages.map(lang => (
-            <option key={lang.code} value={lang.code}>
-              {lang.name}
-            </option>
-          ))}
+          <option value="en">English</option>
+          <option value="fr">Français</option>
         </select>
       </div>
     );
