@@ -94,6 +94,9 @@ export const translateText = async (
         // For array of texts, join with a special delimiter that won't likely be in the text
         const textToTranslate = Array.isArray(text) ? text.join('||SPLIT||') : text;
 
+        console.log('Making translation request with API key:', API_KEY ? 'Key available (hidden)' : 'No key available');
+        console.log('Translating text to:', targetLanguageCode, 'from:', sourceLanguageCode);
+        
         const response = await axios.post(
           url,
           {},
@@ -108,8 +111,11 @@ export const translateText = async (
           }
         );
 
+        console.log('Google Translate API response status:', response.status);
+        
         if (response.data && response.data.data && response.data.data.translations) {
           const translatedText = response.data.data.translations[0].translatedText;
+          console.log('Successfully translated text with Google API');
           
           // If original was array, split back into array
           if (Array.isArray(text)) {
@@ -118,9 +124,17 @@ export const translateText = async (
           
           return translatedText;
         }
-      } catch (apiError) {
-        console.error('Google Translate API error:', apiError);
+      } catch (apiError: any) {
+        // Log more detailed error information
+        console.error('Google Translate API error details:', {
+          message: apiError.message,
+          status: apiError.response?.status,
+          statusText: apiError.response?.statusText,
+          data: apiError.response?.data
+        });
+        
         // Fallback to simulated translation if API call fails
+        console.log('Falling back to simulated translation');
         return simulateTranslation(text, targetLanguageCode);
       }
     }
