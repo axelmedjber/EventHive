@@ -10,14 +10,46 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, Search, X, Globe } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import LanguageSelector from "@/components/common/LanguageSelector";
+import { useLanguage } from "@/lib/translation/LanguageContext";
 
 const Header = () => {
   const [location] = useLocation();
   const { user, logout } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { currentLanguage, setLanguage, supportedLanguages } = useLanguage();
+
+  // Create a single language selector that will be used in both desktop and mobile views
+  const LanguageSelectorControl = () => {
+    const handleLanguageChange = (lang: string) => {
+      console.log(`Language change in Header to ${lang}`);
+      setLanguage(lang);
+    };
+    
+    // Find current language name
+    const currentLanguageName = supportedLanguages.find(
+      lang => lang.code === currentLanguage
+    )?.name || 'English';
+    
+    return (
+      <div className="flex gap-2 items-center">
+        <Globe className="h-4 w-4 text-primary" />
+        <select 
+          value={currentLanguage}
+          onChange={(e) => handleLanguageChange(e.target.value)}
+          className="bg-transparent border-none text-sm cursor-pointer outline-none hover:text-primary focus:ring-0"
+        >
+          {supportedLanguages.map(lang => (
+            <option key={lang.code} value={lang.code}>
+              {lang.name}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  };
 
   return (
     <header className="sticky top-0 bg-white shadow-md z-50">
@@ -55,7 +87,7 @@ const Header = () => {
             </nav>
           </div>
 
-          {/* Desktop Search & Auth */}
+          {/* Desktop Search, Language & Auth */}
           <div className="flex items-center space-x-4">
             {/* Mobile search trigger */}
             <Button
@@ -73,13 +105,13 @@ const Header = () => {
               <Input
                 type="text"
                 placeholder="Search events"
-                className="bg-transparent border-none focus:outline-none focus:ring-0 w-48 lg:w-64 p-0 h-auto"
+                className="bg-transparent border-none focus:outline-none focus:ring-0 w-40 lg:w-56 p-0 h-auto"
               />
             </div>
             
-            {/* Language Selector (desktop/tablet only) */}
+            {/* Language Selector - same component used in mobile and desktop */}
             <div className="hidden md:flex items-center px-3 py-1 bg-primary/5 rounded-md border border-primary/20 ml-2">
-              <LanguageSelector />
+              <LanguageSelectorControl />
             </div>
 
             {user ? (
@@ -128,10 +160,10 @@ const Header = () => {
                   </SheetDescription>
                 </SheetHeader>
                 <div className="flex flex-col space-y-4 mt-8">
-                  {/* Mobile Language Selector */}
+                  {/* Mobile Language Selector - same component as desktop */}
                   <div className="mb-4 p-3 bg-primary/5 rounded-md border border-primary/20">
                     <h3 className="text-sm font-medium mb-2">Language</h3>
-                    <LanguageSelector />
+                    <LanguageSelectorControl />
                   </div>
                   <Link href="/events">
                     <Button
