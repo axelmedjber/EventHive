@@ -23,11 +23,11 @@ const TranslationDemo: React.FC = () => {
   }, [currentLanguage]);
 
   const handleTranslate = async () => {
-    if (!inputText) return;
+    if (!inputText || currentLanguage === 'en') return;
     
     setIsTranslating(true);
     try {
-      const result = await translateText(inputText);
+      const result = await translateText(inputText, currentLanguage, 'en');
       setTranslatedText(result as string);
     } catch (error) {
       console.error('Translation error:', error);
@@ -44,7 +44,8 @@ const TranslationDemo: React.FC = () => {
           <CardTitle>Translation Demo</CardTitle>
         </div>
         <CardDescription>
-          Try our real-time translation powered by Google Cloud Translation. Select a language from the dropdown in the header.
+          Try our real-time translation powered by Google Cloud Translation. 
+          Select a language from the dropdown in the header.
         </CardDescription>
       </CardHeader>
       <CardContent>

@@ -30,7 +30,7 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
     const performTranslation = async () => {
       setIsLoading(true);
       try {
-        const result = await translateText(text);
+        const result = await translateText(text, currentLanguage, 'en');
         setTranslatedText(result as string);
       } catch (error) {
         console.error('Translation error:', error);
