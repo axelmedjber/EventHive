@@ -62,38 +62,44 @@ export const translateText = async (
   if (!Array.isArray(text) && !text) return text;
 
   try {
-    // If we have an API key, use the Google Translate API
+    // If we have an API key, try to use the Google Translate API
     if (API_KEY) {
-      const url = 'https://translation.googleapis.com/language/translate/v2';
-      
-      // For array of texts, join with a special delimiter that won't likely be in the text
-      const textToTranslate = Array.isArray(text) ? text.join('||SPLIT||') : text;
+      try {
+        const url = 'https://translation.googleapis.com/language/translate/v2';
+        
+        // For array of texts, join with a special delimiter that won't likely be in the text
+        const textToTranslate = Array.isArray(text) ? text.join('||SPLIT||') : text;
 
-      const response = await axios.post(
-        url,
-        {},
-        {
-          params: {
-            q: textToTranslate,
-            target: targetLanguageCode,
-            source: sourceLanguageCode,
-            format: 'text',
-            key: API_KEY
+        const response = await axios.post(
+          url,
+          {},
+          {
+            params: {
+              q: textToTranslate,
+              target: targetLanguageCode,
+              source: sourceLanguageCode,
+              format: 'text',
+              key: API_KEY
+            }
           }
-        }
-      );
+        );
 
-      if (response.data && response.data.data && response.data.data.translations) {
-        const translatedText = response.data.data.translations[0].translatedText;
-        
-        // If original was array, split back into array
-        if (Array.isArray(text)) {
-          return translatedText.split('||SPLIT||');
+        if (response.data && response.data.data && response.data.data.translations) {
+          const translatedText = response.data.data.translations[0].translatedText;
+          
+          // If original was array, split back into array
+          if (Array.isArray(text)) {
+            return translatedText.split('||SPLIT||');
+          }
+          
+          return translatedText;
         }
-        
-        return translatedText;
+      } catch (apiError) {
+        console.error('Google Translate API error:', apiError);
+        // Fallback to simulated translation if API call fails
+        return simulateTranslation(text, targetLanguageCode);
       }
-    } 
+    }
     
     // If no API key or error with API, use simulated translations for development
     return simulateTranslation(text, targetLanguageCode);
