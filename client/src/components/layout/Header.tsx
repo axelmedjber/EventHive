@@ -78,7 +78,7 @@ const Header = () => {
             </div>
             
             {/* Language Selector */}
-            <div className="hidden sm:block">
+            <div className="hidden sm:flex items-center px-3 py-1 bg-primary/5 rounded-md border border-primary/20">
               <LanguageSelector />
             </div>
 
@@ -129,7 +129,8 @@ const Header = () => {
                 </SheetHeader>
                 <div className="flex flex-col space-y-4 mt-8">
                   {/* Mobile Language Selector */}
-                  <div className="mb-2">
+                  <div className="mb-4 p-3 bg-primary/5 rounded-md border border-primary/20">
+                    <h3 className="text-sm font-medium mb-2">Language</h3>
                     <LanguageSelector />
                   </div>
                   <Link href="/events">

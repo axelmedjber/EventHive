@@ -22,8 +22,11 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   // Set language and store in localStorage for persistence
   const setLanguage = useCallback((lang: string) => {
-    setCurrentLanguage(lang);
+    console.log(`Setting language to ${lang}`);
+    // Store in localStorage first
     localStorage.setItem('preferred_language', lang);
+    // Then update state
+    setCurrentLanguage(lang);
   }, []);
 
   // Wrap translate functions to include current language

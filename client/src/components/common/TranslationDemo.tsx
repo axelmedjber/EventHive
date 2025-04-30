@@ -22,13 +22,21 @@ const TranslationDemo: React.FC = () => {
     }
   }, [currentLanguage]);
 
+  // Improve translation with cleaner handling of language prefixes
+  const cleanupTranslation = (text: string): string => {
+    const langPrefix = /^\[(EN|ES|FR|DE|ZH|JA|AR|RU)\] /;
+    return text.replace(langPrefix, '');
+  };
+
   const handleTranslate = async () => {
     if (!inputText || currentLanguage === 'en') return;
     
     setIsTranslating(true);
     try {
       const result = await translateText(inputText, currentLanguage, 'en');
-      setTranslatedText(result as string);
+      // Clean up any language prefixes from simulated translations
+      const cleanResult = cleanupTranslation(result as string);
+      setTranslatedText(cleanResult);
     } catch (error) {
       console.error('Translation error:', error);
     } finally {

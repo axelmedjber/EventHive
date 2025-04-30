@@ -14,23 +14,25 @@ if (API_KEY) {
 
 // Helper function to simulate translations for development
 const simulateTranslation = (text: string | string[], targetLanguage: string): string | string[] => {
-  const prefixes: Record<string, string> = {
-    'es': '[ES] ',
-    'fr': '[FR] ',
-    'de': '[DE] ',
-    'zh': '[ZH] ',
-    'ja': '[JA] ',
-    'ar': '[AR] ',
-    'ru': '[RU] ',
+  // Define prefixes and phrase transformations for simulated translations
+  const transformations: Record<string, (text: string) => string> = {
+    'es': (text) => `${text} (Spanish version)`,
+    'fr': (text) => `${text} (French version)`,
+    'de': (text) => `${text} (German version)`,
+    'zh': (text) => `${text} (Chinese version)`,
+    'ja': (text) => `${text} (Japanese version)`,
+    'ar': (text) => `${text} (Arabic version)`,
+    'ru': (text) => `${text} (Russian version)`,
   };
   
-  const prefix = prefixes[targetLanguage] || `[${targetLanguage.toUpperCase()}] `;
+  const transform = transformations[targetLanguage] || 
+    ((text) => `${text} (${targetLanguage.toUpperCase()} version)`);
   
   if (Array.isArray(text)) {
-    return text.map(t => `${prefix}${t}`);
+    return text.map(t => transform(t));
   }
   
-  return `${prefix}${text}`;
+  return transform(text);
 };
 
 export const supportedLanguages = [

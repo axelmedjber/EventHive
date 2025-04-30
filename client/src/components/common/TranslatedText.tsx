@@ -19,6 +19,12 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
   const [translatedText, setTranslatedText] = useState<string>(text);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Improve translation with cleaner handling of language prefixes
+  const cleanupTranslation = (text: string): string => {
+    const langPrefix = /^\[(EN|ES|FR|DE|ZH|JA|AR|RU)\] /;
+    return text.replace(langPrefix, '');
+  };
+
   useEffect(() => {
     // No need to translate if language is English or text is empty
     if (!text || currentLanguage === 'en') {
@@ -31,7 +37,9 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
       setIsLoading(true);
       try {
         const result = await translateText(text, currentLanguage, 'en');
-        setTranslatedText(result as string);
+        // Clean up any language prefixes from simulated translations
+        const cleanResult = cleanupTranslation(result as string);
+        setTranslatedText(cleanResult);
       } catch (error) {
         console.error('Translation error:', error);
         setTranslatedText(text); // Fallback to original text
