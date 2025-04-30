@@ -9,9 +9,11 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Globe } from 'lucide-react';
+import LanguageMoodIndicator from './LanguageMoodIndicator';
 
 /**
- * Simple language selector component that supports switching between English and French
+ * Enhanced language selector component that supports switching between English and French
+ * with an emoji-based mood indicator
  */
 export const LanguageSelector: React.FC = () => {
   const { currentLanguage, setLanguage } = useLanguage();
@@ -30,11 +32,17 @@ export const LanguageSelector: React.FC = () => {
   const currentLanguageName = currentLanguage === 'fr' ? 'Français' : 'English';
 
   return (
-    <div className="flex items-center gap-2 relative">
-      <Globe className="h-4 w-4 text-primary" />
-      <Badge variant="outline" className="text-xs py-0 px-1 mr-1">
-        {currentLanguageName}
-      </Badge>
+    <div className="flex items-center gap-3 relative">
+      <div className="flex items-center">
+        <Globe className="h-4 w-4 text-primary mr-1" />
+        <Badge variant="outline" className="text-xs py-0 px-1">
+          {currentLanguageName}
+        </Badge>
+      </div>
+      
+      {/* Emoji mood indicator */}
+      <LanguageMoodIndicator />
+      
       <Select value={currentLanguage} onValueChange={handleLanguageChange}>
         <SelectTrigger className="w-[120px] h-8 border border-primary">
           <SelectValue />

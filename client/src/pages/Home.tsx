@@ -10,6 +10,7 @@ import { Link } from "wouter";
 import TranslatedText from "@/components/common/TranslatedText";
 import TranslatedButton from "@/components/common/TranslatedButton";
 import TranslatedBadge from "@/components/common/TranslatedBadge";
+import LanguageMoodDisplay from "@/components/common/LanguageMoodDisplay";
 
 const CTASection = () => {
   return (
@@ -65,21 +66,49 @@ const Home = () => {
       
       <CreateCTA />
       
-      {/* Multi-language Translation Demo */}
+      {/* Multi-language Translation Demo with Mood Indicators */}
       <section className="py-12 bg-slate-50">
         <div className="container mx-auto px-6 max-w-7xl">
-          <h2 className="text-3xl font-bold mb-8 text-center">
-            <TranslatedText text="Multi-language Support" />
-          </h2>
-          
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <TranslatedBadge text="Translate to any language" variant="outline" />
-            <TranslatedBadge text="Powered by Google Translate" variant="secondary" />
-            <TranslatedBadge text="Automatic UI translation" variant="default" />
+          <div className="flex flex-col items-center gap-2 mb-8">
+            <h2 className="text-3xl font-bold text-center">
+              <TranslatedText text="Multi-language Support" />
+            </h2>
+            
+            {/* Language Mood Display - Shows the current language "mood" */}
+            <div className="flex items-center gap-3 mt-2">
+              <LanguageMoodDisplay size="lg" animate={true} />
+            </div>
           </div>
           
-          <div className="max-w-2xl mx-auto">
-            <TranslationDemo />
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
+            <TranslatedBadge text="Language Mood Indicators" variant="outline" />
+            <TranslatedBadge text="English-French Translation" variant="secondary" />
+            <TranslatedBadge text="Time-aware Emoji Moods" variant="default" />
+          </div>
+          
+          <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-xl">
+                  <TranslatedText text="Language Mood" />
+                </h3>
+                <p className="text-muted-foreground">
+                  <TranslatedText text="Our application now shows emoji mood indicators that change based on the selected language and time of day." />
+                </p>
+                <div className="flex gap-3 items-center">
+                  <LanguageMoodDisplay showLabel={false} size="lg" />
+                  <span className="text-sm text-muted-foreground">← Morning mood</span>
+                </div>
+                <div className="flex gap-3 items-center">
+                  <LanguageMoodDisplay showLabel={false} size="lg" />
+                  <span className="text-sm text-muted-foreground">← Afternoon mood</span>
+                </div>
+              </div>
+              
+              <div>
+                <TranslationDemo />
+              </div>
+            </div>
           </div>
         </div>
       </section>

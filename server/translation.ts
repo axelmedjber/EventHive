@@ -58,11 +58,20 @@ const translations: Record<string, Record<string, string>> = {
     'Workshops': 'Ateliers',
     'Conferences': 'Conférences',
     
-    // Translation info
+    // Translation and language mood info
     'Multi-language Support': 'Support multilingue',
     'Translate to your preferred language': 'Traduire dans votre langue préférée',
     'Automatic UI Translation': 'Traduction automatique de l\'interface',
     'Powered by EventHub': 'Propulsé par EventHub',
+    'Language Mood Indicators': 'Indicateurs d\'humeur linguistique',
+    'English-French Translation': 'Traduction anglais-français',
+    'Time-aware Emoji Moods': 'Humeurs emoji selon l\'heure',
+    'Language Mood': 'Humeur linguistique',
+    'Our application now shows emoji mood indicators that change based on the selected language and time of day.': 'Notre application affiche maintenant des indicateurs d\'humeur emoji qui changent en fonction de la langue sélectionnée et de l\'heure de la journée.',
+    'Morning mood': 'Humeur matinale',
+    'Afternoon mood': 'Humeur d\'après-midi',
+    'English Vibes': 'Ambiance anglaise',
+    'French Vibes': 'Ambiance française',
   }
 };
 
