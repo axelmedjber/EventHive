@@ -1,99 +1,87 @@
-import axios from 'axios';
-import * as path from 'path';
-import * as fs from 'fs';
-import { TranslationServiceClient } from '@google-cloud/translate';
+// Simple translation module with hardcoded English and French translations
+// No external API dependencies
 
-// Service account credentials
-const CREDENTIALS_FILE = './google-credentials.json';
-
-// Initialize the translation client with service account credentials
-let translationClient: TranslationServiceClient | null = null;
-
-try {
-  if (fs.existsSync(CREDENTIALS_FILE)) {
-    translationClient = new TranslationServiceClient({
-      keyFilename: CREDENTIALS_FILE
-    });
-    console.log('Translation service client initialized with service account credentials');
-  } else {
-    console.error('Service account credentials file not found:', CREDENTIALS_FILE);
-  }
-} catch (error) {
-  console.error('Error initializing translation client:', error);
-}
-
-// Keep API key as fallback
-const API_KEY = process.env.GOOGLE_TRANSLATE_API_KEY;
-if (API_KEY) {
-  console.log('Translation API key available as fallback');
-}
-
-// Helper function to simulate translations for development
-const simulateTranslation = (text: string | string[], targetLanguage: string): string | string[] => {
-  // Define language indicators with correct language names
-  const languageNames: Record<string, string> = {
-    'es': 'Español',
-    'fr': 'Français',
-    'de': 'Deutsch',
-    'zh': '中文',
-    'ja': '日本語',
-    'ar': 'العربية',
-    'ru': 'Русский',
-  };
-  
-  // Create more obvious translations for testing
-  const formatTranslation = (t: string) => {
-    const langName = languageNames[targetLanguage] || targetLanguage.toUpperCase();
+// Dictionary of translations from English to French
+const translations: Record<string, Record<string, string>> = {
+  'fr': {
+    // Common UI elements
+    'Browse Events': 'Parcourir les événements',
+    'Create Event': 'Créer un événement',
+    'Dashboard': 'Tableau de bord',
+    'Login': 'Connexion',
+    'Logout': 'Déconnexion',
+    'Sign up': 'S\'inscrire',
+    'Search events': 'Rechercher des événements',
+    'Menu': 'Menu',
+    'Language': 'Langue',
     
-    // Make the translations very obvious by adding clear language markers
-    switch(targetLanguage) {
-      case 'es':
-        return `ESPAÑOL: ${t}`;
-      case 'fr':
-        return `FRANÇAIS: ${t}`;
-      case 'de':
-        return `DEUTSCH: ${t}`;
-      case 'zh':
-        return `中文: ${t}`;
-      case 'ja':
-        return `日本語: ${t}`;
-      case 'ar':
-        return `العربية: ${t}`;
-      case 'ru':
-        return `РУССКИЙ: ${t}`;
-      default:
-        return `${langName.toUpperCase()}: ${t}`;
-    }
-  };
-  
-  if (Array.isArray(text)) {
-    return text.map(t => formatTranslation(t));
+    // Home page
+    'Hello! Welcome to EventHub': 'Bonjour! Bienvenue sur EventHub',
+    'Ready to discover amazing events?': 'Prêt à découvrir des événements incroyables?',
+    'Join thousands of people attending events near you': 'Rejoignez des milliers de personnes participant à des événements près de chez vous',
+    
+    // Event related
+    'Featured Events': 'Événements en vedette',
+    'Categories': 'Catégories',
+    'Popular Locations': 'Lieux populaires',
+    'Upcoming Events': 'Événements à venir',
+    'View All': 'Voir tout',
+    'View Details': 'Voir les détails',
+    'Register': 'S\'inscrire',
+    'Registration': 'Inscription',
+    'Tickets': 'Billets',
+    'Location': 'Lieu',
+    'Date': 'Date',
+    'Time': 'Heure',
+    'Organizer': 'Organisateur',
+    'Description': 'Description',
+    'Price': 'Prix',
+    'Free': 'Gratuit',
+    'Filter': 'Filtrer',
+    'Sort by': 'Trier par',
+    
+    // Footer and misc
+    'About Us': 'À propos de nous',
+    'Contact': 'Contact',
+    'Privacy Policy': 'Politique de confidentialité',
+    'Terms of Service': 'Conditions d\'utilisation',
+    'Copyright': 'Droits d\'auteur',
+    'All rights reserved': 'Tous droits réservés',
+    
+    // Categories
+    'Music': 'Musique',
+    'Sports': 'Sports',
+    'Arts': 'Arts',
+    'Food': 'Nourriture',
+    'Business': 'Affaires',
+    'Technology': 'Technologie',
+    'Workshops': 'Ateliers',
+    'Conferences': 'Conférences',
+    
+    // Translation info
+    'Multi-language Support': 'Support multilingue',
+    'Translate to your preferred language': 'Traduire dans votre langue préférée',
+    'Automatic UI Translation': 'Traduction automatique de l\'interface',
+    'Powered by EventHub': 'Propulsé par EventHub',
   }
-  
-  return formatTranslation(text);
 };
 
+// Only support English and French
 export const supportedLanguages = [
   { code: 'en', name: 'English' },
-  { code: 'es', name: 'Spanish' },
-  { code: 'fr', name: 'French' },
-  { code: 'de', name: 'German' },
-  { code: 'zh', name: 'Chinese' },
-  { code: 'ja', name: 'Japanese' },
-  { code: 'ar', name: 'Arabic' },
-  { code: 'ru', name: 'Russian' },
+  { code: 'fr', name: 'French' }
 ];
 
 /**
- * Translates text to the target language
+ * Translates text to the target language using a predefined dictionary
  */
 export const translateText = async (
   text: string | string[],
   targetLanguageCode: string,
   sourceLanguageCode: string = 'en'
 ): Promise<string | string[]> => {
-  // If target language is the same as source, no need to translate
-  if (targetLanguageCode === sourceLanguageCode) {
+  // If target language is the same as source or not supported, return original text
+  if (targetLanguageCode === sourceLanguageCode || targetLanguageCode !== 'fr') {
     return text;
   }
   
@@ -102,102 +90,48 @@ export const translateText = async (
   if (!Array.isArray(text) && !text) return text;
 
   try {
-    // Try using the service account client first (most secure method)
-    if (translationClient) {
-      try {
-        console.log('Attempting translation with service account credentials');
-        
-        // Prepare texts for translation
-        const textToTranslate = Array.isArray(text) ? text : [text];
-        const projectId = 'artful-cipher-458411-n6';
-        const location = 'global';
-        
-        const request = {
-          parent: `projects/${projectId}/locations/${location}`,
-          contents: textToTranslate,
-          mimeType: 'text/plain',
-          sourceLanguageCode: sourceLanguageCode,
-          targetLanguageCode: targetLanguageCode,
-        };
-        
-        // Make the translation request
-        const [response] = await translationClient.translateText(request);
-        
-        if (response.translations && response.translations.length > 0) {
-          console.log('Successfully translated text with service account');
-          
-          // Extract translated text
-          const translations = response.translations.map(t => t.translatedText || '');
-          
-          // Return as array or single string based on input
-          if (Array.isArray(text)) {
-            return translations;
-          } else {
-            return translations[0];
-          }
-        }
-      } catch (serviceError) {
-        console.error('Service account translation error:', serviceError);
-        // If service account method fails, try API key method next
-      }
+    // Handle array of texts
+    if (Array.isArray(text)) {
+      return text.map(item => translateSingleText(item, targetLanguageCode));
     }
     
-    // Fallback to API key method if service account failed or isn't available
-    if (API_KEY) {
-      try {
-        const url = 'https://translation.googleapis.com/language/translate/v2';
-        
-        // For array of texts, join with a special delimiter that won't likely be in the text
-        const textToTranslate = Array.isArray(text) ? text.join('||SPLIT||') : text;
-
-        console.log('Falling back to API key translation method');
-        console.log('Translating text to:', targetLanguageCode, 'from:', sourceLanguageCode);
-        
-        const response = await axios.post(
-          url,
-          {},
-          {
-            params: {
-              q: textToTranslate,
-              target: targetLanguageCode,
-              source: sourceLanguageCode,
-              format: 'text',
-              key: API_KEY
-            }
-          }
-        );
-        
-        if (response.data && response.data.data && response.data.data.translations) {
-          const translatedText = response.data.data.translations[0].translatedText;
-          console.log('Successfully translated text with API key');
-          
-          // If original was array, split back into array
-          if (Array.isArray(text)) {
-            return translatedText.split('||SPLIT||');
-          }
-          
-          return translatedText;
-        }
-      } catch (apiError: any) {
-        // Log more detailed error information
-        console.error('API key translation error details:', {
-          message: apiError.message,
-          status: apiError.response?.status,
-          statusText: apiError.response?.statusText,
-          data: apiError.response?.data
-        });
-      }
-    }
-    
-    // If all translation methods failed or aren't available, use simulated translations
-    console.log('All translation methods failed, using simulated translation');
-    return simulateTranslation(text, targetLanguageCode);
+    // Handle single text
+    return translateSingleText(text, targetLanguageCode);
   } catch (error) {
     console.error('Translation error:', error);
-    // Fallback to simulated translations for development
-    return simulateTranslation(text, targetLanguageCode);
+    return text;
   }
 };
+
+// Helper function to translate a single text string
+function translateSingleText(text: string, targetLanguageCode: string): string {
+  const langDict = translations[targetLanguageCode];
+  
+  if (!langDict) {
+    console.log(`No translations available for language: ${targetLanguageCode}`);
+    return text;
+  }
+  
+  // Check if we have a direct translation
+  if (langDict[text]) {
+    console.log(`Found translation for: "${text}"`);
+    return langDict[text];
+  }
+  
+  // If no exact match, try to match sentence fragments
+  // This is a very simple implementation - in production you'd use more sophisticated matching
+  for (const [original, translated] of Object.entries(langDict)) {
+    if (text.includes(original)) {
+      const replacedText = text.replace(original, translated);
+      console.log(`Partial match found for: "${original}" in "${text}"`);
+      return replacedText;
+    }
+  }
+  
+  // If no translation found, return original with a language marker
+  console.log(`No translation found for: "${text}"`);
+  return `[FR] ${text}`;
+}
 
 // Cache translations to reduce API calls
 const translationCache: Record<string, string> = {};

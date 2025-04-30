@@ -10,24 +10,24 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Globe } from 'lucide-react';
 
+/**
+ * Simple language selector component that supports switching between English and French
+ */
 export const LanguageSelector: React.FC = () => {
-  const { currentLanguage, setLanguage, supportedLanguages } = useLanguage();
+  const { currentLanguage, setLanguage } = useLanguage();
 
   const handleLanguageChange = (value: string) => {
     console.log("Language changed to:", value);
-    // Don't reload the page - let React handle re-rendering
     setLanguage(value);
   };
 
   // Debug: log when the component renders with the current language
   useEffect(() => {
-    console.log("LanguageSelector rendered with language:", currentLanguage);
+    console.log("Language change in LanguageSelector:", currentLanguage);
   }, [currentLanguage]);
 
-  // Find the current language name for display
-  const currentLanguageName = supportedLanguages.find(
-    lang => lang.code === currentLanguage
-  )?.name || 'English';
+  // Get the current language name for display
+  const currentLanguageName = currentLanguage === 'fr' ? 'Français' : 'English';
 
   return (
     <div className="flex items-center gap-2 relative">
@@ -40,11 +40,8 @@ export const LanguageSelector: React.FC = () => {
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {supportedLanguages.map((language) => (
-            <SelectItem key={language.code} value={language.code}>
-              {language.name}
-            </SelectItem>
-          ))}
+          <SelectItem value="en">English</SelectItem>
+          <SelectItem value="fr">Français</SelectItem>
         </SelectContent>
       </Select>
     </div>
