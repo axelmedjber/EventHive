@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Menu, Search, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import LanguageSelector from "@/components/common/LanguageSelector";
 
 const Header = () => {
   const [location] = useLocation();
@@ -75,6 +76,11 @@ const Header = () => {
                 className="bg-transparent border-none focus:outline-none focus:ring-0 w-48 lg:w-64 p-0 h-auto"
               />
             </div>
+            
+            {/* Language Selector */}
+            <div className="hidden sm:block">
+              <LanguageSelector />
+            </div>
 
             {user ? (
               <>
@@ -122,6 +128,10 @@ const Header = () => {
                   </SheetDescription>
                 </SheetHeader>
                 <div className="flex flex-col space-y-4 mt-8">
+                  {/* Mobile Language Selector */}
+                  <div className="mb-2">
+                    <LanguageSelector />
+                  </div>
                   <Link href="/events">
                     <Button
                       variant="ghost"

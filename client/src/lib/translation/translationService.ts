@@ -1,32 +1,14 @@
-import { TranslationServiceClient } from '@google-cloud/translate';
+import { apiRequest } from '../queryClient';
 import { v4 as uuidv4 } from 'uuid';
 
-const CREDENTIALS_PATH = './google-credentials.json';
-
-// Create a client using provided service account credentials
-let translationClient: TranslationServiceClient | null = null;
-
-try {
-  translationClient = new TranslationServiceClient({
-    keyFilename: CREDENTIALS_PATH
-  });
-} catch (error) {
-  console.error('Error initializing translation client:', error);
+// Type definitions for API responses
+interface TranslateTextResponse {
+  translatedText: string | string[];
 }
 
-// Get the project ID from credentials
-const getProjectId = (): string => {
-  try {
-    // Since we're in browser environment, we need to get project ID differently
-    return 'artful-cipher-458411-n6';
-  } catch (error) {
-    console.error('Error getting project ID:', error);
-    return '';
-  }
-};
-
-const projectId = getProjectId();
-const location = 'global';
+interface TranslateObjectResponse<T> {
+  translatedObject: T;
+}
 
 export const supportedLanguages = [
   { code: 'en', name: 'English' },
@@ -40,59 +22,34 @@ export const supportedLanguages = [
 ];
 
 /**
- * Translates text to the target language using Google Cloud Translation API
+ * Translates text to the target language using our translation API endpoint
  */
 export const translateText = async (
   text: string | string[],
   targetLanguageCode: string,
   sourceLanguageCode: string = 'en'
 ): Promise<string | string[]> => {
-  if (!translationClient || !projectId) {
-    console.error('Translation client or project ID not available');
-    return Array.isArray(text) ? text : text;
-  }
-
   try {
-    // Handle arrays of text
-    if (Array.isArray(text)) {
-      if (text.length === 0) return [];
-      
-      const request = {
-        parent: `projects/${projectId}/locations/${location}`,
-        contents: text,
-        mimeType: 'text/plain',
-        sourceLanguageCode,
-        targetLanguageCode,
-      };
-
-      const [response] = await translationClient.translateText(request);
-      
-      if (!response.translations) {
-        return text;
-      }
-      
-      return response.translations.map(translation => translation.translatedText || '');
-    } 
-    // Handle single text string
-    else {
-      if (!text) return text;
-      
-      const request = {
-        parent: `projects/${projectId}/locations/${location}`,
-        contents: [text],
-        mimeType: 'text/plain',
-        sourceLanguageCode,
-        targetLanguageCode,
-      };
-
-      const [response] = await translationClient.translateText(request);
-      
-      if (!response.translations || response.translations.length === 0) {
-        return text;
-      }
-      
-      return response.translations[0].translatedText || text;
+    // Don't translate empty text
+    if (Array.isArray(text) && text.length === 0) return [];
+    if (!Array.isArray(text) && !text) return text;
+    
+    // Call our server-side translation endpoint
+    const response = await apiRequest('/api/translations/translate', {
+      method: 'POST',
+      body: JSON.stringify({
+        text,
+        targetLanguage: targetLanguageCode,
+        sourceLanguage: sourceLanguageCode
+      })
+    });
+    
+    if (response.translatedText) {
+      return response.translatedText;
     }
+    
+    // Return original text if no translation available
+    return Array.isArray(text) ? text : text;
   } catch (error) {
     console.error('Translation error:', error);
     return Array.isArray(text) ? text : text;
@@ -149,37 +106,24 @@ export const translateObject = async<T extends Record<string, any>>(
     return obj;
   }
 
-  const result = { ...obj };
-  const keysToTranslate: string[] = [];
-  const textsToTranslate: string[] = [];
-
-  // Collect all string properties for translation
-  for (const key in obj) {
-    if (typeof obj[key] === 'string' && obj[key]) {
-      keysToTranslate.push(key);
-      textsToTranslate.push(obj[key]);
-    }
-  }
-
-  if (textsToTranslate.length === 0) {
-    return result;
-  }
-
   try {
-    const translatedTexts = await translateText(
-      textsToTranslate,
-      targetLanguageCode,
-      sourceLanguageCode
-    ) as string[];
-
-    // Update the result object with translated texts
-    keysToTranslate.forEach((key, index) => {
-      result[key] = translatedTexts[index];
+    // Call our server-side object translation endpoint
+    const response = await apiRequest('/api/translations/translate-object', {
+      method: 'POST',
+      body: JSON.stringify({
+        object: obj,
+        targetLanguage: targetLanguageCode,
+        sourceLanguage: sourceLanguageCode
+      })
     });
-
-    return result;
+    
+    if (response.translatedObject) {
+      return response.translatedObject as T;
+    }
+    
+    return obj;
   } catch (error) {
     console.error('Error translating object:', error);
-    return result;
+    return obj;
   }
 };

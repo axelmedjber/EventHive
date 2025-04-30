@@ -9,6 +9,7 @@ import {
   insertRegistrationSchema,
   eventFormSchema
 } from "@shared/schema";
+import { translateText, translateWithCache, supportedLanguages } from "./translation";
 import * as bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
@@ -412,6 +413,113 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // TRANSLATION ROUTES
+
+  // Get supported languages
+  app.get("/api/translations/languages", async (_req: Request, res: Response) => {
+    try {
+      res.json(supportedLanguages);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Translate text
+  app.post("/api/translations/translate", async (req: Request, res: Response) => {
+    try {
+      const { text, targetLanguage, sourceLanguage = 'en' } = req.body;
+      
+      if (!text || !targetLanguage) {
+        return res.status(400).json({ message: "Text and target language are required" });
+      }
+      
+      // Check if target language is supported
+      const isLanguageSupported = supportedLanguages.some(lang => lang.code === targetLanguage);
+      if (!isLanguageSupported) {
+        return res.status(400).json({ message: "Unsupported target language" });
+      }
+      
+      // If it's an array of strings
+      if (Array.isArray(text)) {
+        const translatedTexts = await translateText(text, targetLanguage, sourceLanguage);
+        return res.json({ translatedText: translatedTexts });
+      }
+      
+      // If it's a single string
+      const translatedText = await translateWithCache(text, targetLanguage, sourceLanguage);
+      res.json({ translatedText });
+    } catch (error) {
+      console.error('Translation error:', error);
+      res.status(500).json({ message: "Translation error" });
+    }
+  });
+  
+  // Translate object fields
+  app.post("/api/translations/translate-object", async (req: Request, res: Response) => {
+    try {
+      const { object, targetLanguage, sourceLanguage = 'en', fields } = req.body;
+      
+      if (!object || !targetLanguage) {
+        return res.status(400).json({ message: "Object and target language are required" });
+      }
+      
+      // Check if target language is supported
+      const isLanguageSupported = supportedLanguages.some(lang => lang.code === targetLanguage);
+      if (!isLanguageSupported) {
+        return res.status(400).json({ message: "Unsupported target language" });
+      }
+      
+      // Clone the object to avoid modifying the original
+      const result = { ...object };
+      
+      // If specific fields are provided, only translate those
+      if (Array.isArray(fields) && fields.length > 0) {
+        const textsToTranslate: string[] = [];
+        const fieldsToTranslate: string[] = [];
+        
+        for (const field of fields) {
+          if (field in object && typeof object[field] === 'string' && object[field]) {
+            textsToTranslate.push(object[field]);
+            fieldsToTranslate.push(field);
+          }
+        }
+        
+        if (textsToTranslate.length > 0) {
+          const translatedTexts = await translateText(textsToTranslate, targetLanguage, sourceLanguage) as string[];
+          
+          fieldsToTranslate.forEach((field, index) => {
+            result[field] = translatedTexts[index];
+          });
+        }
+      } 
+      // Otherwise translate all string fields
+      else {
+        const textsToTranslate: string[] = [];
+        const fieldsToTranslate: string[] = [];
+        
+        for (const key in object) {
+          if (typeof object[key] === 'string' && object[key]) {
+            textsToTranslate.push(object[key]);
+            fieldsToTranslate.push(key);
+          }
+        }
+        
+        if (textsToTranslate.length > 0) {
+          const translatedTexts = await translateText(textsToTranslate, targetLanguage, sourceLanguage) as string[];
+          
+          fieldsToTranslate.forEach((field, index) => {
+            result[field] = translatedTexts[index];
+          });
+        }
+      }
+      
+      res.json({ translatedObject: result });
+    } catch (error) {
+      console.error('Object translation error:', error);
+      res.status(500).json({ message: "Translation error" });
+    }
+  });
+
   // REGISTRATION ROUTES
   
   // Register for an event
