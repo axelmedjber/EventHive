@@ -28,21 +28,16 @@ const Header = () => {
       setLanguage(lang);
     };
     
-    // Use hard-coded language names instead of the full list from context
-    const currentLanguageName = currentLanguage === 'fr' ? 'Français' : 'English';
-    
     return (
-      <div className="flex gap-2 items-center">
-        <Globe className="h-4 w-4 text-primary" />
-        <select 
-          value={currentLanguage}
-          onChange={(e) => handleLanguageChange(e.target.value)}
-          className="bg-transparent border-none text-sm cursor-pointer outline-none hover:text-primary focus:ring-0"
-        >
-          <option value="en">English</option>
-          <option value="fr">Français</option>
-        </select>
-      </div>
+      <select 
+        value={currentLanguage}
+        onChange={(e) => handleLanguageChange(e.target.value)}
+        className="bg-transparent border-none text-sm cursor-pointer outline-none hover:text-primary focus:ring-0"
+        aria-label="Select language"
+      >
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+      </select>
     );
   };
 
@@ -104,9 +99,17 @@ const Header = () => {
               />
             </div>
             
-            {/* Language Selector - same component used in mobile and desktop */}
+            {/* Language Selector with badge - same component used in mobile and desktop */}
             <div className="hidden md:flex items-center px-3 py-1 bg-primary/5 rounded-md border border-primary/20 ml-2">
-              <LanguageSelectorControl />
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  <Globe className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-sm">
+                    {currentLanguage === 'fr' ? 'FR' : 'EN'}
+                  </span>
+                </div>
+                <LanguageSelectorControl />
+              </div>
             </div>
 
             {user ? (
@@ -155,10 +158,18 @@ const Header = () => {
                   </SheetDescription>
                 </SheetHeader>
                 <div className="flex flex-col space-y-4 mt-8">
-                  {/* Mobile Language Selector - same component as desktop */}
+                  {/* Mobile Language Selector with current language indicator */}
                   <div className="mb-4 p-3 bg-primary/5 rounded-md border border-primary/20">
-                    <h3 className="text-sm font-medium mb-2">Language</h3>
-                    <LanguageSelectorControl />
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="text-sm font-medium">Language</h3>
+                      <div className="px-2 py-0.5 bg-primary/10 rounded text-xs font-semibold">
+                        {currentLanguage === 'fr' ? 'FR' : 'EN'}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-primary" />
+                      <LanguageSelectorControl />
+                    </div>
                   </div>
                   <Link href="/events">
                     <Button
