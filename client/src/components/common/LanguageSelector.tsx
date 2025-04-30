@@ -15,9 +15,8 @@ export const LanguageSelector: React.FC = () => {
 
   const handleLanguageChange = (value: string) => {
     console.log("Language changed to:", value);
+    // Don't reload the page - let React handle re-rendering
     setLanguage(value);
-    // Force a reload to make sure all components re-render with the new language
-    window.location.reload();
   };
 
   // Debug: log when the component renders with the current language

@@ -77,8 +77,8 @@ const Header = () => {
               />
             </div>
             
-            {/* Language Selector */}
-            <div className="hidden sm:flex items-center px-3 py-1 bg-primary/5 rounded-md border border-primary/20">
+            {/* Language Selector (desktop/tablet only) */}
+            <div className="hidden md:flex items-center px-3 py-1 bg-primary/5 rounded-md border border-primary/20 ml-2">
               <LanguageSelector />
             </div>
 
