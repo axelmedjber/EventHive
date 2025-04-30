@@ -19,12 +19,7 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
   const [translatedText, setTranslatedText] = useState<string>(text);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Improve translation with cleaner handling of language indicators
-  const cleanupTranslation = (text: string): string => {
-    // Remove language suffix: "text [Français]" -> "text"
-    const langSuffix = / \[(Español|Français|Deutsch|中文|日本語|العربية|Русский|[A-Z]+)\]$/;
-    return text.replace(langSuffix, '');
-  };
+  // No longer need to clean up translation formatted on the server
 
   // Track language change events
   useEffect(() => {
@@ -52,9 +47,8 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
     setIsLoading(true);
     try {
       const result = await translateText(text, currentLanguage, 'en');
-      // Clean up any language prefixes from simulated translations
-      const cleanResult = cleanupTranslation(result as string);
-      setTranslatedText(cleanResult);
+      // No cleanup needed as translations are already properly formatted
+      setTranslatedText(result as string);
     } catch (error) {
       console.error('Translation error:', error);
       setTranslatedText(text); // Fallback to original text

@@ -25,9 +25,29 @@ const simulateTranslation = (text: string | string[], targetLanguage: string): s
     'ru': 'Русский',
   };
   
+  // Create more obvious translations for testing
   const formatTranslation = (t: string) => {
     const langName = languageNames[targetLanguage] || targetLanguage.toUpperCase();
-    return `${t} [${langName}]`;
+    
+    // Make the translations very obvious by adding clear language markers
+    switch(targetLanguage) {
+      case 'es':
+        return `ESPAÑOL: ${t}`;
+      case 'fr':
+        return `FRANÇAIS: ${t}`;
+      case 'de':
+        return `DEUTSCH: ${t}`;
+      case 'zh':
+        return `中文: ${t}`;
+      case 'ja':
+        return `日本語: ${t}`;
+      case 'ar':
+        return `العربية: ${t}`;
+      case 'ru':
+        return `РУССКИЙ: ${t}`;
+      default:
+        return `${langName.toUpperCase()}: ${t}`;
+    }
   };
   
   if (Array.isArray(text)) {
