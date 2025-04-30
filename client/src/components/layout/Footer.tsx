@@ -62,7 +62,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-12 pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center">
-          <p className="opacity-80 mb-4 md:mb-0">© 2023 EventHub. All rights reserved.</p>
+          <p className="opacity-80 mb-4 md:mb-0">© 2025 EventHub. All rights reserved.</p>
 
           <div className="flex space-x-6">
             <Link href="/events" className="text-white opacity-80 hover:opacity-100 transition-opacity">Privacy</Link>
