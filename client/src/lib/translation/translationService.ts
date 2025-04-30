@@ -35,17 +35,16 @@ export const translateText = async (
     if (!Array.isArray(text) && !text) return text;
     
     // Call our server-side translation endpoint
-    const response = await apiRequest('/api/translations/translate', {
-      method: 'POST',
-      body: JSON.stringify({
-        text,
-        targetLanguage: targetLanguageCode,
-        sourceLanguage: sourceLanguageCode
-      })
+    const response = await apiRequest('POST', '/api/translations/translate', {
+      text,
+      targetLanguage: targetLanguageCode,
+      sourceLanguage: sourceLanguageCode
     });
     
-    if (response.translatedText) {
-      return response.translatedText;
+    const data: TranslateTextResponse = await response.json();
+    
+    if (data.translatedText) {
+      return data.translatedText;
     }
     
     // Return original text if no translation available
@@ -108,17 +107,16 @@ export const translateObject = async<T extends Record<string, any>>(
 
   try {
     // Call our server-side object translation endpoint
-    const response = await apiRequest('/api/translations/translate-object', {
-      method: 'POST',
-      body: JSON.stringify({
-        object: obj,
-        targetLanguage: targetLanguageCode,
-        sourceLanguage: sourceLanguageCode
-      })
+    const response = await apiRequest('POST', '/api/translations/translate-object', {
+      object: obj,
+      targetLanguage: targetLanguageCode,
+      sourceLanguage: sourceLanguageCode
     });
     
-    if (response.translatedObject) {
-      return response.translatedObject as T;
+    const data: TranslateObjectResponse<T> = await response.json();
+    
+    if (data.translatedObject) {
+      return data.translatedObject;
     }
     
     return obj;

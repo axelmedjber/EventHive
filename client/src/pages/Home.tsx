@@ -4,6 +4,7 @@ import CategoryFilters from "@/components/events/CategoryFilters";
 import EventGrid from "@/components/events/EventGrid";
 import CreateCTA from "@/components/common/CreateCTA";
 import PopularLocations from "@/components/common/LocationCard";
+import TranslationDemo from "@/components/common/TranslationDemo";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
@@ -54,6 +55,16 @@ const Home = () => {
       />
       
       <CreateCTA />
+      
+      {/* Multi-language Translation Demo */}
+      <section className="py-12 bg-slate-50">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <h2 className="text-3xl font-bold mb-8 text-center">Multi-language Support</h2>
+          <div className="max-w-2xl mx-auto">
+            <TranslationDemo />
+          </div>
+        </div>
+      </section>
       
       <PopularLocations />
       
